@@ -1,0 +1,303 @@
+openapi: 3.0.3
+info:
+  title: Todo Frontend-Backend API Contract
+  description: API contract defining the integration points between the Next.js frontend and FastAPI backend
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Development server
+  - url: https://api.todoapp.com/v1
+    description: Production server
+
+paths:
+  /users/{user_id}/tasks:
+    get:
+      summary: Get all tasks for a user
+      description: Retrieve all tasks associated with the authenticated user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user whose tasks to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of user's tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+        '403':
+          description: Forbidden - Attempting to access another user's tasks
+        '404':
+          description: User not found
+      security:
+        - bearerAuth: []
+
+    post:
+      summary: Create a new task for user
+      description: Create a new task associated with the authenticated user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user creating the task
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+        '403':
+          description: Forbidden - Attempting to create task for another user
+        '422':
+          description: Unprocessable Entity - Invalid request data
+      security:
+        - bearerAuth: []
+
+  /users/{user_id}/tasks/{task_id}:
+    get:
+      summary: Get a specific task
+      description: Retrieve a specific task by ID for the authenticated user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          description: The ID of the task to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+        '403':
+          description: Forbidden - Attempting to access another user's task
+        '404':
+          description: Task not found
+      security:
+        - bearerAuth: []
+
+    put:
+      summary: Update a task
+      description: Update an existing task for the authenticated user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          description: The ID of the task to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+        '403':
+          description: Forbidden - Attempting to update another user's task
+        '404':
+          description: Task not found
+        '422':
+          description: Unprocessable Entity - Invalid request data
+      security:
+        - bearerAuth: []
+
+    delete:
+      summary: Delete a task
+      description: Delete a task for the authenticated user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          description: The ID of the task to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Task deleted successfully
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+        '403':
+          description: Forbidden - Attempting to delete another user's task
+        '404':
+          description: Task not found
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from authentication
+
+  schemas:
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - completed
+        - created_at
+        - updated_at
+        - user_id
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the task
+          example: "task-123"
+        title:
+          type: string
+          description: Title of the task
+          maxLength: 255
+          example: "Complete project documentation"
+        description:
+          type: string
+          description: Optional description of the task
+          maxLength: 1000
+          example: "Write comprehensive documentation for the project"
+        completed:
+          type: boolean
+          description: Whether the task is completed
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the task was created
+          example: "2023-10-20T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the task was last updated
+          example: "2023-10-20T10:00:00Z"
+        user_id:
+          type: string
+          description: ID of the user who owns this task
+          example: "user-456"
+
+    CreateTaskRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Title of the task
+          maxLength: 255
+          minLength: 1
+          example: "Complete project documentation"
+        description:
+          type: string
+          description: Optional description of the task
+          maxLength: 1000
+          example: "Write comprehensive documentation for the project"
+        completed:
+          type: boolean
+          description: Whether the task is initially completed
+          default: false
+
+    UpdateTaskRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Updated title of the task
+          maxLength: 255
+          minLength: 1
+        description:
+          type: string
+          description: Updated description of the task
+          maxLength: 1000
+        completed:
+          type: boolean
+          description: Updated completion status
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized - Invalid or missing JWT token
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - detail
+            properties:
+              detail:
+                type: string
+                example: "Could not validate credentials"
+    ForbiddenError:
+      description: Forbidden - Attempting to access another user's resources
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - detail
+            properties:
+              detail:
+                type: string
+                example: "Cannot access tasks for another user"
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - detail
+            properties:
+              detail:
+                type: string
+                example: "Task not found"
+
+security:
+  - bearerAuth: []

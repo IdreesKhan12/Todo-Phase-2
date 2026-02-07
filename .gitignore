@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-egots/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.test
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.db-journal
+
+# Coverage
+.coverage
+htmlcov/
+.coverage.*
+
+# Testing
+.pytest_cache/
+.pytest/
+
+# Backend specific
+backend/venv/
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+
+# Frontend specific (if needed later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.next/
+.nuxt/
+dist/
+*.min.js
+*.min.css
+
+# Better Auth / Auth specific
+*.session
+sessions/
+auth_tokens.json
+
+# Secrets
+secret.key
+*.key
+*.pem
+*.crt
+certs/
+
+# Local config
+local-config.json
+config-local.json
