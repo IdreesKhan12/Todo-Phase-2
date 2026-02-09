@@ -17,6 +17,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
+    // Only access localStorage after component mounts (client-side only)
     const storedTheme = localStorage.getItem('theme') as Theme | null;
     if (storedTheme === 'dark' || storedTheme === 'light') {
       setTheme(storedTheme);
@@ -38,10 +39,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
+  // Prevent flash of unstyled content during SSR
+  // Return children with default theme context even before mounted
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
