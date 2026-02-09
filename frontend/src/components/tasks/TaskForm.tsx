@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from '@/src/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
+import { API_CONFIG } from '@/config/api';
 
 interface TaskFormProps {
   onTaskCreated: () => void;
@@ -25,7 +26,7 @@ export default function TaskForm({ onTaskCreated }: TaskFormProps) {
     setError('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${user?.id}/tasks`, {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/api/${user?.id}/tasks`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('better-auth-session-token')}`,
@@ -34,7 +35,8 @@ export default function TaskForm({ onTaskCreated }: TaskFormProps) {
         body: JSON.stringify({
           title: title.trim(),
           description: description.trim(),
-          completed
+          completed,
+          user_id: user?.id
         }),
       });
 

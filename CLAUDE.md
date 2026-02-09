@@ -254,6 +254,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 ## Active Technologies
 - JavaScript/TypeScript (Next.js 16+), React 18+ + Next.js 16+, React 18+, Better Auth, axios, Tailwind CSS (002-frontend-integration)
 - N/A (frontend only - data stored in backend Neon PostgreSQL) (002-frontend-integration)
+- TypeScript (Next.js 14, React 18) + Next.js 14.0.4, React 18.2, Tailwind CSS 3.3, next/font/google (Inter) (003-ui-ux-design-system)
+- N/A (frontend-only — data in Neon PostgreSQL via existing API) (003-ui-ux-design-system)
 
 ## Recent Changes
 - 002-frontend-integration: Added JavaScript/TypeScript (Next.js 16+), React 18+ + Next.js 16+, React 18+, Better Auth, axios, Tailwind CSS
